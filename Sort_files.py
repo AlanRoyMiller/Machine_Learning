@@ -11,7 +11,7 @@ def validate_images(input_dir: str, output_dir: str, log_file="log_file.log", fo
     if not os.path.exists(os.path.abspath(input_dir)):
         raise ValueError
 
-    directory_list = sorted([file for file in glob.glob(f"{input_dir}/**", recursive=True) if os.path.isfile(file)])
+    directory_list = sorted([file for file in glob.glob(f"{input_dir}/**", recursive=True) if os.path.isfile(file)]) # return sorted list of all files in input_dir
 
     os.makedirs(output_dir, exist_ok=True)
 
@@ -32,39 +32,38 @@ def validate_images(input_dir: str, output_dir: str, log_file="log_file.log", fo
 
         filename_new = file.removeprefix(input_dir)
 
-        if not file.endswith(valid_filetypes):  # 1. The file name ends with .jpg, .JPG, .jpeg or .JPEG.
-
+        if not file.endswith(valid_filetypes):  # Correct File ending
             logging.debug(f"{filename_new}, 1\n")
             continue
 
-        elif os.path.getsize(file) > max_filesize:  # 2. The file size does not exceed 250kB
+        elif os.path.getsize(file) > max_filesize:  # The file size does not exceed max_filesize
             logging.debug(f"{filename_new}, 2\n")
             continue
 
         try:
             img = PIL.Image.open(file)
-            if img.mode not in image_modes:  # 4. the three channels are in the order RGB
+            if img.mode not in image_modes:  # Mode is in image_modes
                 logging.debug(f"{filename_new}, 4\n")
                 continue
 
             elif (img.width < min_width) and (
-                    img.height < min_height):  # 4. The image data has a shape of (H, W, 3) with H (height) and W (width) larger than or equal to 100 pixels,
+                    img.height < min_height):  # Check if height and width are bigger than the maximum allowed
                 logging.debug(f"{filename_new}, 4\n")
                 continue
 
             image_array = np.array(img)
             image_variance = np.var(image_array)
-            if image_variance < variance_threshold:  # The image data has a variance larger than 0
+            if image_variance < variance_threshold:  # Check if image data has a variance larger than the threshold
                 logging.debug(f"{filename_new}, 5\n")
                 continue
 
             pic_hash = hashlib.sha256(img.tobytes()).hexdigest()
-            if pic_hash in hash_values:  # 6. The same image has not been copied already.
+            if pic_hash in hash_values:  # Check if same image has not been copied already.
                 logging.debug(f"{filename_new}, 6\n")
                 continue
             hash_values.append(pic_hash)
 
-        except PIL.UnidentifiedImageError:  # 3. The file can be read as image
+        except PIL.UnidentifiedImageError:  # Check if file can be read as image
             logging.debug(f"{filename_new}, 3\n")
 
         else:

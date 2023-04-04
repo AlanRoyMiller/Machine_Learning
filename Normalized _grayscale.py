@@ -2,11 +2,6 @@ import PIL.Image
 import numpy as np
 from PIL import Image
 
-image_file = r"C:\Users\armil\Documents\Uni\Programming in Python2\ex2\a (2).jpg"
-with Image.open(image_file) as im:
-    image = np.array(im)
-
-print(len(image[:, :, 0]))
 
 
 def to_grayscale(pil_image: np.ndarray) -> np.ndarray:
@@ -23,10 +18,9 @@ def to_grayscale(pil_image: np.ndarray) -> np.ndarray:
     new_image = y_srgb * 255.0
 
     new_img = Image.fromarray(new_image.astype(np.uint8))
-    #new_img = Image.
+
     new_img.save('new_image.jpg')
 
 
-print(f"mode: {im.mode}; shape: {image.shape}; min: {image.min()}; max: {image.max()}; dtype: {image.dtype}")
+    #return ...
 
-to_grayscale(image)

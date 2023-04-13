@@ -1,4 +1,4 @@
-import PIL, PIL.Image
+import PIL, PIL.Image, PIL.ImageStat
 import os
 import glob
 import shutil
@@ -16,13 +16,13 @@ def validate_images(input_dir: str, output_dir: str, log_file="log_file.log", fo
     os.makedirs(output_dir, exist_ok=True)
 
     # Variables
-    valid_filetypes = (".jpg", ".JPG", ".jpeg", ".JPEG")
+    valid_filetypes = (".jpg", ".jpeg")
     output_filetype = ".jpg"
     max_filesize = 250000
     min_width, min_height = 100, 100
     image_modes = ("RGB", "L")
     variance_threshold = 0
-    hash_values = []
+    hash_values = set()
     copied_files = 0
 
     # Create log file
@@ -32,7 +32,7 @@ def validate_images(input_dir: str, output_dir: str, log_file="log_file.log", fo
 
         filename_new = file.removeprefix(input_dir)
 
-        if not file.endswith(valid_filetypes):  # Correct File ending
+        if not file.lower().endswith(valid_filetypes):  # Correct File ending
             logging.debug(f"{filename_new}, 1\n")
             continue
 
@@ -51,8 +51,9 @@ def validate_images(input_dir: str, output_dir: str, log_file="log_file.log", fo
                 logging.debug(f"{filename_new}, 4\n")
                 continue
 
-            image_array = np.array(img)
-            image_variance = np.var(image_array)
+            stat = PIL.ImageStat.Stat(img)
+            image_variance = stat.var
+            image_variance = sum(image_variance) / len(image_variance)
             if image_variance < variance_threshold:  # Check if image data has a variance larger than the threshold
                 logging.debug(f"{filename_new}, 5\n")
                 continue
@@ -61,7 +62,7 @@ def validate_images(input_dir: str, output_dir: str, log_file="log_file.log", fo
             if pic_hash in hash_values:  # Check if same image has not been copied already.
                 logging.debug(f"{filename_new}, 6\n")
                 continue
-            hash_values.append(pic_hash)
+            hash_values.add(pic_hash)
 
         except PIL.UnidentifiedImageError:  # Check if file can be read as image
             logging.debug(f"{filename_new}, 3\n")

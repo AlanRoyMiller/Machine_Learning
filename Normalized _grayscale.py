@@ -1,4 +1,3 @@
-import PIL.Image
 import numpy as np
 from PIL import Image
 

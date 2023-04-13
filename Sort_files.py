@@ -1,4 +1,4 @@
-import PIL, PIL.Image
+import PIL, PIL.Image, PIL.ImageStat
 import os
 import glob
 import shutil
@@ -51,8 +51,9 @@ def validate_images(input_dir: str, output_dir: str, log_file="log_file.log", fo
                 logging.debug(f"{filename_new}, 4\n")
                 continue
 
-            image_array = np.array(img)
-            image_variance = np.var(image_array)
+            stat = PIL.ImageStat.Stat(img)
+            image_variance = stat.var
+            image_variance = sum(image_variance) / len(image_variance)
             if image_variance < variance_threshold:  # Check if image data has a variance larger than the threshold
                 logging.debug(f"{filename_new}, 5\n")
                 continue

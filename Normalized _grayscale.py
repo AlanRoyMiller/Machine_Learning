@@ -1,23 +1,39 @@
 import numpy as np
-from PIL import Image
+
+
+"""
+to_grayscale takes in a numpy array representing an image in RGB format 
+and returns a numpy array representing the same image but in grayscale format with an additional brightness channel.
+This function is based on the colorimetric conversion.
+See:  https://en.wikipedia.org/wiki/Grayscale#Colorimetric_(perceptual_luminance-preserving)_conversion_to_grayscale
+
+
+"""
 
 
 def to_grayscale(pil_image: np.ndarray) -> np.ndarray:
-    new_image = pil_image / 255.0  # Normalize values
-    print(new_image.shape)
+    if len(pil_image.shape) == 2:
+        pil_image_copy = pil_image.copy()
+        np.expand_dims(pil_image_copy, axis=0)
+        return pil_image_copy
 
-    c_linear = np.where((new_image[:, :, :] <= 0.04045), (new_image[:, :, :] / 12.92), (((new_image[:, :, :] + 0.055) / 1.055) ** 2.4))
-    print(new_image.shape)
+    elif pil_image.shape[2] != 3:
+        raise ValueError
+
+    pil_image_copy = pil_image.copy() / 255.0
+
+    c_linear = np.where((pil_image_copy <= 0.04045), (pil_image_copy / 12.92),
+                        (((pil_image_copy + 0.055) / 1.055) ** 2.4))
 
     y_linear = c_linear[:, :, 0] * 0.2126 + c_linear[:, :, 1] * 0.7152 + c_linear[:, :, 2] * 0.0722
-    print(new_image.shape)
 
-    for i in range(3):
-        c_linear[:, :, i] = y_linear
+    y_srgb = np.where((y_linear <= 0.0031308), (y_linear * 12.92), (((y_linear ** (1 / 2.4)) * 1.055) - 0.055))
 
-    y_srgb = np.where((c_linear[:, :, :] <= 0.0031308), (c_linear[:, :, :] * 12.92), (((c_linear[:, :, :] ** (1 / 2.4)) * 1.055) - 0.055))
+    pil_image_copy = (y_srgb * 255.0).astype(pil_image.dtype)
 
-    new_image = y_srgb * 255.0
+    if np.issubdtype(pil_image.dtype, np.integer):
+        pil_image_copy = np.round(pil_image_copy)
 
-    new_img = Image.fromarray(new_image.astype(np.uint8))
-    new_img.save('new_image.jpg')
+    pil_image_copy = np.expand_dims(pil_image_copy, axis=0)
+
+    return pil_image_copy

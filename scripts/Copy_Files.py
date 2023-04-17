@@ -2,9 +2,12 @@ import PIL, PIL.Image, PIL.ImageStat
 import os
 import glob
 import shutil
-import numpy as np
 import hashlib
 import logging
+
+
+"""validate_images validates, filters, and copies image files from an input directory to an output directory based on 
+certain criteria. The function also logs information about the files that do not meet these criteria. """
 
 
 def validate_images(input_dir: str, output_dir: str, log_file="log_file.log", formatter: str = "07d"):

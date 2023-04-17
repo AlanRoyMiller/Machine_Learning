@@ -49,7 +49,7 @@ def validate_images(input_dir: str, output_dir: str, log_file="log_file.log", fo
                 logging.debug(f"{filename_new}, 4\n")
                 continue
 
-            elif (img.width < min_width) and (
+            elif (img.width < min_width) or (
                     img.height < min_height):  # Check if height and width are bigger than the maximum allowed
                 logging.debug(f"{filename_new}, 4\n")
                 continue

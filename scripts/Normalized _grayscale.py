@@ -1,17 +1,17 @@
 import numpy as np
 
 
-"""
-to_grayscale takes in a numpy array representing an image in RGB format 
-and returns a numpy array representing the same image but in grayscale format with an additional brightness channel.
-This function is based on the colorimetric conversion.
-See:  https://en.wikipedia.org/wiki/Grayscale#Colorimetric_(perceptual_luminance-preserving)_conversion_to_grayscale
-
-
-"""
-
-
 def to_grayscale(pil_image: np.ndarray) -> np.ndarray:
+
+    """
+    to_grayscale takes in a numpy array representing an image in RGB format
+    and returns a numpy array representing the same image but in grayscale format with an additional brightness channel.
+    This function is based on the colorimetric conversion.
+    See:  https://en.wikipedia.org/wiki/Grayscale#Colorimetric_(perceptual_luminance-preserving)_conversion_to_grayscale
+
+
+    """
+
     if len(pil_image.shape) == 2:
         pil_image_copy = pil_image.copy()
         np.expand_dims(pil_image_copy, axis=0)

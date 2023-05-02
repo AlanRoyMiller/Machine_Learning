@@ -1,7 +1,7 @@
-Welcome to our image depixelation project!
+Image Depixelation (README)
 
-Our goal is to develop an image depixelation algorithm that can improve the quality of low-resolution images by removing the pixelated artifacts and enhancing the details. We are currently in the process of developing and testing various models and techniques to achieve this goal.
+This project aims to recreate the pixelated areas within an image using a Convolutional Neural Network (CNN).
 
-At the moment, the image depixelation tool is still in development and is not yet fully functional. We are working hard to optimize the algorithms and improve the performance of the tool. Once the development is complete, we will release the final version of the tool to the public.
+The performance of the model will be evaluated using the root-mean-squared error (RMSE) of the predicted pixels.
 
-We appreciate your interest in our project and hope that you will stay tuned for future updates.
+This is a project intended for learning purposes. By working on this project, I am gaining experience in image processing, deep learning, and data analysis.

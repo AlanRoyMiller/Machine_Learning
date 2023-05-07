@@ -9,6 +9,3 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 #copy the current directory contents into the container at /Machine_Learning
 COPY . /Machine_Learning
-
-#run the command to start the app
-CMD ["python", "scripts\stack_with_padding_collate.py"]

@@ -12,7 +12,7 @@ class SimpleNetwork(torch.nn.Module):
         self.activation_function = activation_function
 
 
-    def forward(self, x: torch.Tensor): # -> torch.Tensor
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.layer_1(x)
         self.activation_function(x)
         x = x = self.layer_2(x)

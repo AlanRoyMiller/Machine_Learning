@@ -12,7 +12,7 @@ def validate_images(input_dir: str, output_dir: str, log_file="log_file.log", fo
     certain criteria. The function also logs information about the files that do not meet these criteria. """
 
     if not os.path.exists(os.path.abspath(input_dir)):
-        raise ValueError
+        raise ValueError("Input directory does not exist.")
 
     directory_list = sorted([file for file in glob.glob(f"{input_dir}/**", recursive=True) if os.path.isfile(file)]) # return sorted list of all files in input_dir
 

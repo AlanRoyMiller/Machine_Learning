@@ -71,7 +71,7 @@ def validate_images(input_dir: str, output_dir: str, log_file="log_file.log", fo
             logging.debug(f"{filename_new}, 3\n")
 
         else:
-            new_filename = output_dir + f"/{copied_files:{formatter}}{output_filetype}"
+            new_filename = os.path.join(output_dir, f"{copied_files:{formatter}}{output_filetype}")
 
             shutil.copy(file, new_filename)
             copied_files += 1

@@ -35,7 +35,8 @@ def random_augmented_image(
 
 if __name__ == "__main__":
     from matplotlib import pyplot as plt
-    with Image.open("Materials-20230601/08_example_image.jpg") as image:
+    image_path = "path/to/File.jpg"
+    with Image.open(image_path) as image:
         transformed_image = random_augmented_image(image, image_size=300, seed=3)
 
         fig, axes = plt.subplots(1, 2)

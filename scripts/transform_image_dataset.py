@@ -37,8 +37,8 @@ class TransformedImageDataset(torch.utils.data.Dataset):
 
 if __name__ == "__main__":
     from matplotlib import pyplot as plt
-
-    imgs = ImageDataset(image_dir=r"C:\Users\armil\Desktop\python\output_dir")
+    images_directory = r"path to images"
+    imgs = ImageDataset(image_dir=images_directory)
     transformed_imgs = TransformedImageDataset(imgs, image_size=300)
 
     for (original_img, index), (transformed_img, _) in zip(imgs, transformed_imgs):

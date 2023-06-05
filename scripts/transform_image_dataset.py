@@ -1,4 +1,4 @@
-from ex6.a6_ex1 import random_augmented_image
+from random_augmentation import random_augmented_image
 from torchvision import transforms
 from PIL import Image
 import torch

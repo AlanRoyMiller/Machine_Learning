@@ -12,11 +12,15 @@ def training_loop(
         early_stopping: int = 3
 
 ):  # -> tuple[list, list]:
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    optimizer = torch.optim.SGD(network.parameters(), lr=0.00001)
+    network.to(device)
+    print(f"Using {device}.")
+
+    optimizer = torch.optim.Adam(network.parameters(), lr=0.0001)
     loss_function = torch.nn.MSELoss()
 
-    train_dataloader = DataLoader(train_data, shuffle=False, batch_size=32, num_workers=0)
+    train_dataloader = DataLoader(train_data, shuffle=True, batch_size=32, num_workers=0)
     eval_dataloader = DataLoader(eval_data, shuffle=False, batch_size=32, num_workers=0)
 
     losses_train_dataloader = []
@@ -32,8 +36,10 @@ def training_loop(
         average_batch_loss = []
 
         for input_tensor, target_tensor in train_dataloader:
+            input_tensor = input_tensor.to(device)
+            target_tensor = target_tensor.to(device)
             output = network(input_tensor)
-            loss = loss_function(output, target_tensor)
+            loss = loss_function(output.squeeze(), target_tensor)
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
@@ -45,8 +51,10 @@ def training_loop(
         with torch.no_grad():
             average_batch_loss_eval = []
             for input_tensor, target_tensor in eval_dataloader:
+                input_tensor = input_tensor.to(device)
+                target_tensor = target_tensor.to(device)
                 output = network(input_tensor)
-                loss = loss_function(output, target_tensor)
+                loss = loss_function(output.squeeze(), target_tensor)
                 average_batch_loss_eval.append(loss.item())
             loss_eval = sum(average_batch_loss_eval) / len(average_batch_loss_eval)
 
@@ -89,5 +97,7 @@ if __name__ == "__main__":
     torch.random.manual_seed(0)
     train_data, eval_data = get_dataset()
     network = SimpleNetwork(32, 128, 1)
-    train_losses, eval_losses = training_loop(network, train_data, eval_data, num_epochs=100)
+    train_losses, eval_losses = training_loop(network, train_data, eval_data, num_epochs=150)
+    for epoch, (tl, el) in enumerate(zip(train_losses, eval_losses)):
+        print(f"Epoch: {epoch} --- Train loss: {tl:7.2f} --- Eval loss: {el:7.2f}")
     plot_losses(train_losses, eval_losses)

@@ -11,10 +11,16 @@ def training_loop(
         show_progress: bool = True
 ):  # -> tuple[list, list]:
 
-    optimizer = torch.optim.SGD(network.parameters(), lr=0.00001)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    network.to(device)
+    print(f"Using {device}.")
+
+
+    optimizer = torch.optim.Adam(network.parameters(), lr=0.00001)
     loss_function = torch.nn.MSELoss()
 
-    train_dataloader = DataLoader(train_data, shuffle=False, batch_size=32, num_workers=0)
+    train_dataloader = DataLoader(train_data, shuffle=True, batch_size=32, num_workers=0)
     eval_dataloader = DataLoader(eval_data, shuffle=False, batch_size=32, num_workers=0)
 
     losses_train_dataloader = []
@@ -28,8 +34,9 @@ def training_loop(
         average_batch_loss = []
 
         for input_tensor, target_tensor in train_dataloader:
+            input_tensor, target_tensor = input_tensor.to(device), target_tensor.to(device)
             output = network(input_tensor)
-            loss = loss_function(output, target_tensor)
+            loss = loss_function(output.squeeze(), target_tensor)
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
@@ -41,12 +48,12 @@ def training_loop(
         with torch.no_grad():
             average_batch_loss_eval = []
             for input_tensor, target_tensor in eval_dataloader:
+                input_tensor, target_tensor = input_tensor.to(device), target_tensor.to(device)
                 output = network(input_tensor)
-                loss = loss_function(output, target_tensor)
+                loss = loss_function(output.squeeze(), target_tensor)
                 average_batch_loss_eval.append(loss.item())
         loss_eval = sum(average_batch_loss_eval) / len(average_batch_loss_eval)
         losses_eval_dataloader.append(loss_eval)
-
 
         if show_progress:
             progress_bar.update()

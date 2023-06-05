@@ -9,7 +9,6 @@ def training_loop(
         eval_data: torch.utils.data.Dataset,
         num_epochs: int,
         show_progress: bool = True,
-        early_stopping: int = 3
 
 ):  # -> tuple[list, list]:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -97,7 +96,7 @@ if __name__ == "__main__":
     torch.random.manual_seed(0)
     train_data, eval_data = get_dataset()
     network = SimpleNetwork(32, 128, 1)
-    train_losses, eval_losses = training_loop(network, train_data, eval_data, num_epochs=150)
+    train_losses, eval_losses = training_loop(network, train_data, eval_data, num_epochs=100)
     for epoch, (tl, el) in enumerate(zip(train_losses, eval_losses)):
         print(f"Epoch: {epoch} --- Train loss: {tl:7.2f} --- Eval loss: {el:7.2f}")
     plot_losses(train_losses, eval_losses)
